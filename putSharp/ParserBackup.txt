@@ -1,0 +1,241 @@
+//private static Status StatusParser(JsonReader reader)
+        //{
+        //    Dictionary<string, object> dataPairs = new Dictionary<string, object>();
+
+        //    bool inMP4Section = false;
+
+        //    while (reader.Read())
+        //    {
+        //        if(reader.Value == null)
+        //        {
+        //            inMP4Section = false;
+        //            continue;
+        //        }
+
+        //        string key = reader.Value as string;
+
+        //        if(key == "mp4")
+        //        {
+        //            inMP4Section = true;
+        //        }
+
+        //        if(key == "status" && inMP4Section)
+        //        {
+        //            key = "mp4_status";
+        //        }
+
+        //        reader.Read();
+        //        dataPairs.Add(key, reader.Value);
+        //    }
+
+        //    Status status = new Status();
+        //    status.State = (Enums.eStatus)Enum.Parse(typeof(Enums.eStatus), dataPairs["status"] as string);
+            
+        //    //has mp4 state data
+        //    if(dataPairs.Count > 1)
+        //    {
+        //        status.Mp4State = dataPairs.ContainsKey("mp4_status") ? (Enums.eStatus)Enum.Parse(typeof(Enums.eStatus), dataPairs["mp4_status"] as string) : Enums.eStatus.NOT_AVAILABLE;
+        //        status.Mp4PercentDone = dataPairs.ContainsKey("percent_done") ? (long)dataPairs["percent_done"] : long.MinValue;
+        //        status.Mp4Size = dataPairs.ContainsKey("size") ? (long)dataPairs["size"] : long.MinValue;
+        //        status.Mp4FileID = dataPairs.ContainsKey("id") ? (long)dataPairs["id"] : long.MinValue;
+        //    }
+
+        //    return status;
+        ////}
+
+        //private static DataTypes.File SingleFileParser(JsonReader reader)
+        //{
+        //    List<object> readerValues = new List<object>();
+
+        //    while (reader.Read())
+        //    {
+        //        readerValues.Add(reader.Value);
+        //    }
+
+        //    Dictionary<string, object> dataPairs = new Dictionary<string, object>();
+
+        //    for (int i = readerValues.IndexOf(readerValues.First(j => j != null && j.ToString() == "content_type")); i < readerValues.Count; i++)
+        //    {
+        //        if (readerValues[i] == null)
+        //        {
+        //            i++;
+        //            continue;
+        //        }
+
+        //        string key = readerValues[i] as string;               
+
+        //        if (key == "size")
+        //        {
+        //            dataPairs.Add(key, readerValues[i + 1]);
+
+        //            DataTypes.File file = new DataTypes.File();
+        //            file.ContentType = dataPairs["content_type"] as string;
+        //            file.Crc32 = dataPairs["crc32"] as string;
+        //            file.CreationTime = dataPairs["created_at"] != null ? (System.DateTime)dataPairs["created_at"] : System.DateTime.MinValue;
+        //            file.FirstAccessTime = dataPairs["first_accessed_at"] != null ? (System.DateTime)dataPairs["first_accessed_at"] : System.DateTime.MinValue;
+        //            file.IconLocation = dataPairs["icon"] as string;
+        //            file.IsMP4Available = dataPairs["is_mp4_available"] != null ? (bool)dataPairs["is_mp4_available"] : false;
+        //            file.Id = dataPairs["id"] != null ? (long)dataPairs["id"] : long.MinValue;
+        //            file.IsShared = dataPairs["is_shared"] != null ? (bool)dataPairs["is_shared"] : false;
+        //            file.Name = dataPairs["name"] as string;
+        //            file.OpenSubtitlesHash = dataPairs["opensubtitles_hash"] as string;
+        //            file.ParentID = dataPairs["parent_id"] != null ? (long)dataPairs["parent_id"] : long.MinValue;
+        //            file.ScreenShot = dataPairs["screenshot"];
+        //            file.Size = dataPairs["size"] != null ? (long)dataPairs["size"] : long.MinValue;
+
+        //            return file;
+        //        }
+        //        else
+        //        {
+        //            dataPairs.Add(key, readerValues[i + 1]);
+        //            i++;
+        //        }
+        //    }
+
+        //    return null;
+        //}
+
+        //private static List<DataTypes.File> FileParser(JsonReader reader)
+        //{
+        //    List<DataTypes.File> files = new List<DataTypes.File>();
+
+        //    List<object> readerValues = new List<object>();
+
+        //    while (reader.Read())
+        //    {
+        //        readerValues.Add(reader.Value);
+        //    }
+
+        //    Dictionary<string, object> dataPairs = new Dictionary<string, object>();
+
+        //    for(int i = readerValues.IndexOf(readerValues.First(j => j != null && j.ToString() == "files")) + 3; i < readerValues.Count; i++)
+        //    {
+        //        if(readerValues[i] == null)
+        //        {
+        //            i ++;
+        //            continue;
+        //        }
+
+        //        string key = readerValues[i] as string;
+                
+        //        if(key == "parent")
+        //        {
+        //            for(int j = i + 2; j < readerValues.Count; j++)
+        //            {
+        //                string parentKey = readerValues[j] as string;
+
+        //                if (parentKey == null)
+        //                {
+        //                    continue;
+        //                }
+
+        //                if (parentKey == "content_type" || parentKey == "status")
+        //                {
+        //                    //dataPairs.Add(parentKey, readerValues[j + 1]);
+        //                    //j += 3;
+
+        //                    DataTypes.File file = new DataTypes.File();
+        //                    file.ContentType = dataPairs["content_type"] as string;
+        //                    file.Crc32 = dataPairs["crc32"] as string;
+        //                    file.CreationTime = dataPairs["created_at"] != null ? (System.DateTime)dataPairs["created_at"] : System.DateTime.MinValue;
+        //                    file.FirstAccessTime = dataPairs["first_accessed_at"] != null ? (System.DateTime)dataPairs["first_accessed_at"] : System.DateTime.MinValue;
+        //                    file.IconLocation = dataPairs["icon"] as string;
+        //                    file.IsMP4Available = dataPairs["is_mp4_available"] != null ? (bool)dataPairs["is_mp4_available"] : false;
+        //                    file.Id = dataPairs["id"] != null ? (long)dataPairs["id"] : long.MinValue;
+        //                    file.IsShared = dataPairs["is_shared"] != null ? (bool)dataPairs["is_shared"] : false;
+        //                    file.Name = dataPairs["name"] as string;
+        //                    file.OpenSubtitlesHash = dataPairs["opensubtitles_hash"] as string;
+        //                    file.ParentID = dataPairs["parent_id"] != null ? (long)dataPairs["parent_id"] : long.MinValue;
+        //                    file.ScreenShot = dataPairs["screenshot"];
+        //                    file.Size = dataPairs["size"] != null ? (long)dataPairs["size"] : long.MinValue;
+
+        //                    files.Add(file);
+
+        //                    dataPairs.Clear();
+
+        //                    dataPairs.Add(parentKey, readerValues[j + 1]);
+        //                    j++;
+
+        //                    //if(parentKey == "status")
+        //                    //{
+
+        //                    //}
+        //                }
+        //                else
+        //                {
+        //                    dataPairs.Add(parentKey, readerValues[j + 1]);
+        //                    j++;
+        //                }
+        //            }
+
+        //            break;
+        //        }
+        //        else if(key == "status")
+        //        {
+        //            break;
+        //        }
+        //        else if(key == "content_type" && i > 20)
+        //        {
+        //            //dataPairs.Add(key, readerValues[i - 1]);
+        //            //i += 3;
+
+        //            DataTypes.File file = new DataTypes.File();
+        //            file.ContentType = dataPairs["content_type"] as string;
+        //            file.Crc32 = dataPairs["crc32"] as string;
+        //            file.CreationTime = dataPairs["created_at"] != null? (System.DateTime)dataPairs["created_at"]: System.DateTime.MinValue;
+        //            file.FirstAccessTime = dataPairs["first_accessed_at"] != null ? (System.DateTime)dataPairs["first_accessed_at"] : System.DateTime.MinValue;
+        //            file.IconLocation = dataPairs["icon"] as string;
+        //            file.IsMP4Available = dataPairs["is_mp4_available"] != null ? (bool)dataPairs["is_mp4_available"] : false; 
+        //            file.Id = dataPairs["id"] != null ? (long)dataPairs["id"] : long.MinValue;
+        //            file.IsShared = dataPairs["is_shared"] != null ? (bool)dataPairs["is_shared"] : false;
+        //            file.Name = dataPairs["name"] as string;
+        //            file.OpenSubtitlesHash = dataPairs["opensubtitles_hash"] as string;
+        //            file.ParentID = dataPairs["parent_id"] != null ? (long)dataPairs["parent_id"] : long.MinValue;
+        //            file.ScreenShot = dataPairs["screenshot"];
+        //            file.Size = dataPairs["size"] != null ? (long)dataPairs["size"] : long.MinValue;
+
+        //            files.Add(file);
+        //            dataPairs.Clear();
+
+        //            dataPairs.Add(key, readerValues[i + 1]);
+        //            i++;
+        //        }
+        //        else
+        //        {
+        //            dataPairs.Add(key, readerValues[i + 1]);
+        //            i++;
+        //        }
+        //    }
+
+        //    return files;
+        //}
+
+        //private static List<DataTypes.File> SharedFileParser(JsonReader reader)
+        //{
+        //    List<object> readerValues = new List<object>();
+
+        //    while (reader.Read())
+        //    {
+        //        readerValues.Add(reader.Value);
+        //    }
+
+        //    Dictionary<string, object> dataPairs = new Dictionary<string, object>();
+
+        //    for (int i = readerValues.IndexOf(readerValues.First(j => j != null && j.ToString() == "shared")) + 3; i < readerValues.Count; i++)
+        //    {
+        //        if (readerValues[i] == null)
+        //        {
+        //            i++;
+        //            continue;
+        //        }
+
+        //        string key = readerValues[i] as string;
+
+        //        if(key == "status")
+        //        {
+                    
+        //        }
+        //    }
+
+        //    return null;
+        //}
