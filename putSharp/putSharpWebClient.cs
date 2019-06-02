@@ -22,11 +22,11 @@ namespace putSharp
 
         public byte[] UploadFileAndParameters(string address, string filePath, NameValueCollection values)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(address);
-            request.Method = "POST";
-            request.UserAgent = "curl/7.33.0";
+            //HttpWebRequest request = (HttpWebRequest)WebRequest.Create(address);
+            //request.Method = "POST";
+            //request.UserAgent = "curl/7.33.0";
 
-
+            return null;
 
             //r request = WebRequest.Create(address);
             //request.Method = "POST";

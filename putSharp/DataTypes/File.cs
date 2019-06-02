@@ -14,7 +14,7 @@ namespace putSharp.DataTypes
         public string Crc32 => (string)_data["crc32"];
         public string CreatedAt => (string)_data["created_at"];
         public string Extension => (string)_data["extension"];
-        public string FileType => (string)_data["file_type"];
+        public string FileType => (string)_data["file_type"];        
         public string FirstAccessedAt => (string)_data["first_accessed_at"];
         public string FolderType => (string)_data["folder_type"];
         public string Icon => (string)_data["icon"];
@@ -29,5 +29,18 @@ namespace putSharp.DataTypes
         public int Size => (int)_data["size"];
         public int StartFrom => (int)_data["start_from"];
         public string UpdatedAt => (string)_data["updated_at"];
+
+        public bool IsFolder
+        {
+            get
+            {
+                if(FileType == "FOLDER")
+                {
+                    return true;
+                }
+
+                return false;
+            }
+        }
     }
 }
