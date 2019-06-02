@@ -15,5 +15,20 @@ namespace putSharp.DataTypes
         public List<Dictionary<string, object>> Files { get => _files; set => _files = value; }
         public Dictionary<string, object> ParentFile { get => _parentFile; set => _parentFile = value; }
         public string Status { get => _status; set => _status = value; }
+
+        public List<File> GetFiles()
+        {
+            List<File> files = new List<File>();
+
+            foreach (Dictionary<string, object> dictionary in _files)
+            {
+                File f = new File();
+                f.Data = dictionary;
+                f.Status = _status;
+                files.Add(f);
+            }
+
+            return files;
+        }
     }
 }
