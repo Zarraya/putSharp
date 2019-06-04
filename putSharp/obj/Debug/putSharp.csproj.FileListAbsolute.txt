@@ -6,4 +6,5 @@ c:\users\zarraya\source\repos\putSharp\putSharp\bin\Debug\Newtonsoft.Json.xml
 c:\users\zarraya\source\repos\putSharp\putSharp\obj\Debug\putSharp.csproj.CoreCompileInputs.cache
 c:\users\zarraya\source\repos\putSharp\putSharp\obj\Debug\putSharp.dll
 c:\users\zarraya\source\repos\putSharp\putSharp\obj\Debug\putSharp.pdb
-C:\Users\Zarraya\source\repos\putSharp\putSharp\obj\Debug\putSharp.csprojResolveAssemblyReference.cache
+C:\Users\Zarraya\source\repos\putSharp\putSharp\obj\Debug\putSharp.csprojAssemblyReference.cache
+C:\Users\Zarraya\source\repos\putSharp\putSharp\obj\Debug\putSharp.csproj.CopyComplete

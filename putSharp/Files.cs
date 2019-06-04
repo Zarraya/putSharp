@@ -24,7 +24,7 @@ namespace putSharp
             _accessToken = accessToken;
         }
 
-        public FileListResult List(int parentID = 0)
+        public FileListResult List(long parentID = 0)
         {
             string url = _baseURL + "list?parent_id="+ parentID +"&oauth_token=" + _accessToken;
 
@@ -35,7 +35,7 @@ namespace putSharp
             return FileListParser(json);
         }
 
-        public static FileListResult List(string accessToken, int parentID = 0)
+        public static FileListResult List(string accessToken, long parentID = 0)
         {
             string url = _baseURL + "list?parent_id=" + parentID + "&oauth_token=" + accessToken;
 

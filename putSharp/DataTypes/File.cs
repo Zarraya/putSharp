@@ -40,5 +40,18 @@ namespace putSharp.DataTypes
         }
 
         #endregion
+          
+        public bool IsFolder
+        {
+            get
+            {
+                if(FileType == "FOLDER")
+                {
+                    return true;
+                }
+
+                return false;
+            }
+        }
     }
 }
