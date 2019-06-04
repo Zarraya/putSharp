@@ -30,5 +30,14 @@ namespace putSharp.DataTypes
 
             return files;
         }
+
+        public File GetParentFile()
+        {
+            File file = new File();
+            file.Data = _parentFile;
+            file.Status = _status;
+
+            return file;
+        }
     }
 }

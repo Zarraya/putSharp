@@ -4,7 +4,8 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using putSharp.DataTypes;
 
 namespace putSharp
@@ -380,12 +381,11 @@ namespace putSharp
         #region Parsers
         private static Feed FeedParser(string json)
         {
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            dynamic jsonObj = jsonSerializer.Deserialize<dynamic>(json);
+            dynamic jsonObj = JsonConvert.DeserializeObject<dynamic>(json);
 
             Feed feedResult = new Feed();
 
-            Dictionary<string, object> feed = jsonObj["feed"];
+            Dictionary<string, object> feed = ((JObject)jsonObj["feed"]).ToObject<Dictionary<string, object>>();
 
             foreach (KeyValuePair<string, object> data in feed)
             {
@@ -399,16 +399,15 @@ namespace putSharp
 
         private static FeedList FeedListParser(string json)
         {
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            dynamic jsonObj = jsonSerializer.Deserialize<dynamic>(json);
+            dynamic jsonObj = JsonConvert.DeserializeObject<dynamic>(json);
 
             FeedList feeds = new FeedList();
 
-            object[] feedsData = jsonObj["feeds"];
+            object[] feedsData = ((JArray)jsonObj["feeds"]).ToObject<object[]>();
 
-            foreach (Dictionary<string, object> feed in feedsData)
+            foreach (JObject feed in feedsData)
             {
-                feeds.Feeds.Add(feed);
+                feeds.Feeds.Add(feed.ToObject<Dictionary<string, object>>());
             }
 
             feeds.Status = jsonObj["status"];
@@ -418,8 +417,7 @@ namespace putSharp
 
         private static string StatusParser(string json)
         {
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            dynamic jsonObj = jsonSerializer.Deserialize<dynamic>(json);
+            dynamic jsonObj = JsonConvert.DeserializeObject<dynamic>(json);
 
             return jsonObj["status"];
         }

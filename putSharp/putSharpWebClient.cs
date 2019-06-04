@@ -26,6 +26,7 @@ namespace putSharp
             request.Method = "POST";
             request.UserAgent = "curl/7.33.0";
 
+            return null;
 
 
             //r request = WebRequest.Create(address);
@@ -46,7 +47,7 @@ namespace putSharp
             //        buffer1 = Encoding.UTF8.GetBytes(values[name] + Environment.NewLine);
             //        requestStream.Write(buffer1, 0, buffer1.Length);
             //    }
-                
+
             //    var buffer = Encoding.ASCII.GetBytes(boundary + Environment.NewLine);
             //    requestStream.Write(buffer, 0, buffer.Length);
             //    buffer = Encoding.UTF8.GetBytes(string.Format("Content-Disposition: form-data; name=\"{0}\"; filename=\"{1}\"{2}", Path.GetFileNameWithoutExtension(filePath), Path.GetFileName(filePath), Environment.NewLine));

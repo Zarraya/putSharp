@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using putSharp.DataTypes;
 
 namespace putSharp
@@ -149,16 +150,15 @@ namespace putSharp
         #region Parsers
         private static FriendList FriendListParser(string json)
         {
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            dynamic jsonObj = jsonSerializer.Deserialize<dynamic>(json);
+            dynamic jsonObj = JsonConvert.DeserializeObject<dynamic>(json);
 
             FriendList list = new FriendList();
 
-            object[] friends = jsonObj["friends"];
+            object[] friends = ((JArray)jsonObj["friends"]).ToObject<object[]>();
 
-            foreach (Dictionary<string, object> friend in friends)
+            foreach (JObject friend in friends)
             {
-                list.Friends.Add(friend);
+                list.Friends.Add(friend.ToObject<Dictionary<string, object>>());
             }
 
             list.Status = jsonObj["status"];
@@ -168,8 +168,7 @@ namespace putSharp
 
         private static string StatusParser(string json)
         {
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            dynamic jsonObj = jsonSerializer.Deserialize<dynamic>(json);
+            dynamic jsonObj = JsonConvert.DeserializeObject<dynamic>(json);
 
             return jsonObj["status"];
         }

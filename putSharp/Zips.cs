@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Text;
-using System.Web.Script.Serialization;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using putSharp.DataTypes;
 
 namespace putSharp
@@ -106,8 +107,7 @@ namespace putSharp
         #region Parsers
         private static CreatedZip CreatedZipParser(string json)
         {
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            dynamic jsonObj = jsonSerializer.Deserialize<dynamic>(json);
+            dynamic jsonObj = JsonConvert.DeserializeObject<dynamic>(json);
 
             CreatedZip zip = new CreatedZip();            
 
@@ -119,16 +119,15 @@ namespace putSharp
 
         private static ZipsList ZipListParser(string json)
         {
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            dynamic jsonObj = jsonSerializer.Deserialize<dynamic>(json);
+            dynamic jsonObj = JsonConvert.DeserializeObject<dynamic>(json);
 
             ZipsList list = new ZipsList();
 
-            object[] zips = jsonObj["zips"];
+            object[] zips = ((JArray) jsonObj["zips"]).ToObject<object[]>();
 
-            foreach (Dictionary<string, object> zip in zips)
+            foreach (JObject zip in zips)
             {
-                list.Zips.Add(zip);
+                list.Zips.Add(zip.ToObject<Dictionary<string, object>>());
             }
 
             list.Status = jsonObj["status"];
@@ -138,16 +137,15 @@ namespace putSharp
         
         private static Zip ZipParser(string json)
         {
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            dynamic jsonObj = jsonSerializer.Deserialize<dynamic>(json);
+            dynamic jsonObj = JsonConvert.DeserializeObject<dynamic>(json);
 
             Zip zip = new Zip();
 
-            object[] files = jsonObj["zips"];
+            object[] files = ((JArray) jsonObj["zips"]).ToObject<object[]>();
 
-            foreach (Dictionary<string, object> file in files)
+            foreach (JObject file in files)
             {
-                zip.MissingFiles.Add(file);
+                zip.MissingFiles.Add(file.ToObject<Dictionary<string, object>>());
             }
 
             zip.Status = jsonObj["status"];
