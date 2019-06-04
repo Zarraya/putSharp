@@ -4,7 +4,8 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using putSharp.DataTypes;
 
 namespace putSharp
@@ -239,16 +240,15 @@ namespace putSharp
         #region Parsers
         private static TransfersList TransferParser(string json)
         {
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            dynamic jsonObj = jsonSerializer.Deserialize<dynamic>(json);
+            dynamic jsonObj = JsonConvert.DeserializeObject<dynamic>(json);
 
             TransfersList list = new TransfersList();
 
-            object[] transfers = jsonObj["transfers"];
+            object[] transfers = ((JArray)jsonObj["transfers"]).ToObject<object[]>();
 
-            foreach (Dictionary<string, object> transfer in transfers)
+            foreach (JObject transfer in transfers)
             {
-                list.Transfers.Add(transfer);
+                list.Transfers.Add(transfer.ToObject<Dictionary<string, object>>());
             }
 
             list.Status = jsonObj["status"];
@@ -258,12 +258,11 @@ namespace putSharp
 
         private static Transfer SingleTransferParser(string json)
         {
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            dynamic jsonObj = jsonSerializer.Deserialize<dynamic>(json);
+            dynamic jsonObj = JsonConvert.DeserializeObject<dynamic>(json);
 
             Transfer list = new Transfer();
             
-            foreach (KeyValuePair<string, object> pair in jsonObj)
+            foreach (KeyValuePair<string, object> pair in ((JObject) jsonObj).ToObject<Dictionary<string, object>>())
             {
                 list.Data.Add(pair.Key, pair.Value);
             }

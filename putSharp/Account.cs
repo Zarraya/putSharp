@@ -4,7 +4,8 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using putSharp.DataTypes;
 
 namespace putSharp
@@ -97,12 +98,11 @@ namespace putSharp
         #region Parsers
         private static AccountInfo AccountInfoParser(string json)
         {
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            dynamic jsonObj = jsonSerializer.Deserialize<dynamic>(json);
+            dynamic jsonObj = JsonConvert.DeserializeObject<dynamic>(json);
 
             AccountInfo accountInfo = new AccountInfo();
 
-            Dictionary<string, object> info = jsonObj["info"];
+            Dictionary<string, object> info = ((JObject) jsonObj["info"]).ToObject<Dictionary<string, object>>();
 
             foreach (KeyValuePair<string, object> data in info)
             {
@@ -116,12 +116,11 @@ namespace putSharp
 
         private static AccountSettings AccountSettingsParser(string json)
         {
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            dynamic jsonObj = jsonSerializer.Deserialize<dynamic>(json);
+            dynamic jsonObj = JsonConvert.DeserializeObject<dynamic>(json);
 
             AccountSettings accountSettings = new AccountSettings();
 
-            Dictionary<string, object> settings = jsonObj["settings"];
+            Dictionary<string, object> settings = ((JObject)jsonObj["settings"]).ToObject<Dictionary<string, object>>();
 
             foreach (KeyValuePair<string, object> setting in settings)
             {

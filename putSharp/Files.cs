@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Collections.Specialized;
 using putSharp.DataTypes;
-using System.Web.Script.Serialization;
+using Newtonsoft.Json.Linq;
 
 namespace putSharp
 {
@@ -749,19 +749,18 @@ namespace putSharp
         #region Parsers
         private static FileListResult FileListParser(string json)
         {
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            dynamic jsonObj = jsonSerializer.Deserialize<dynamic>(json);
+            dynamic jsonObj = JsonConvert.DeserializeObject<dynamic>(json);
 
             FileListResult result = new FileListResult();
 
-            object[] files = jsonObj["files"];
+            object[] files = ((JArray) jsonObj["files"]).ToObject<object[]>(); 
 
-            foreach (Dictionary<string, object> fileData in files)
+            foreach (JObject fileData in files)
             {
-                result.Files.Add(fileData);
+                result.Files.Add(fileData.ToObject<Dictionary<string,object>>());
             }
 
-            result.ParentFile = jsonObj["parent"];
+            result.ParentFile = ((JObject)jsonObj["parent"]).ToObject<Dictionary<string, object>>();
             result.Status = jsonObj["status"];
 
             return result;
@@ -769,18 +768,17 @@ namespace putSharp
 
         private static SearchResult SearchResultParser(string json)
         {
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            dynamic jsonObj = jsonSerializer.Deserialize<dynamic>(json);
+            dynamic jsonObj = JsonConvert.DeserializeObject<dynamic>(json);
             
             SearchResult result = new SearchResult();
 
-            object[] files = jsonObj["files"];
+            object[] files = ((JArray)jsonObj["files"]).ToObject<object[]>();
 
-            foreach (Dictionary<string, object> fileData in files)
+            foreach (JObject fileData in files)
             {
-                result.Files.Add(fileData);
+                result.Files.Add(fileData.ToObject<Dictionary<string, object>>());
             }
-            
+
             result.Status = jsonObj["status"];
             result.NextPageURL = jsonObj["next"];
             return result;
@@ -788,12 +786,11 @@ namespace putSharp
 
         private static DataTypes.File SingleFileParser(string json)
         {
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            dynamic jsonObj = jsonSerializer.Deserialize<dynamic>(json);
+            dynamic jsonObj = JsonConvert.DeserializeObject<dynamic>(json);
 
             DataTypes.File file = new DataTypes.File();
 
-            file.Data = jsonObj["file"];
+            file.Data = ((JObject)jsonObj["file"]).ToObject<Dictionary<string, object>>();
             file.Status = jsonObj["status"];
 
             return file;
@@ -801,20 +798,18 @@ namespace putSharp
 
         private static string StatusParser(string json)
         {
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            dynamic jsonObj = jsonSerializer.Deserialize<dynamic>(json);
+            dynamic jsonObj = JsonConvert.DeserializeObject<dynamic>(json);
 
             return jsonObj["status"];
         }
 
         private static MP4Status MP4StatusParser(string json)
         {
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            dynamic jsonObj = jsonSerializer.Deserialize<dynamic>(json);
+            dynamic jsonObj = JsonConvert.DeserializeObject<dynamic>(json);
 
             MP4Status status = new MP4Status();
 
-            status.Mp4 = jsonObj["mp4"];
+            status.Mp4 = ((JObject)jsonObj["mp4"]).ToObject<Dictionary<string, object>>();
             status.Status = jsonObj["status"];
 
             return status;
@@ -822,16 +817,15 @@ namespace putSharp
 
         private static SharedFilesList SharedFilesParser(string json)
         {
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            dynamic jsonObj = jsonSerializer.Deserialize<dynamic>(json);
+            dynamic jsonObj = JsonConvert.DeserializeObject<dynamic>(json);
 
             SharedFilesList list = new SharedFilesList();
 
-            object[] files = jsonObj["shared"];
+            object[] files = ((JArray)jsonObj["shared"]).ToObject<object[]>();
 
-            foreach (Dictionary<string, object> fileData in files)
+            foreach (JObject fileData in files)
             {
-                list.Files.Add(fileData);
+                list.Files.Add(fileData.ToObject<Dictionary<string, object>>());
             }
 
             list.Status = jsonObj["status"];
@@ -841,16 +835,15 @@ namespace putSharp
 
         private static UserList UserListParser(string json)
         {
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            dynamic jsonObj = jsonSerializer.Deserialize<dynamic>(json);
+            dynamic jsonObj = JsonConvert.DeserializeObject<dynamic>(json);
 
             UserList list = new UserList();
 
-            object[] users = jsonObj["shared-with"];
+            object[] users = ((JArray)jsonObj["shared-with"]).ToObject<object[]>();
 
-            foreach (Dictionary<string, object> userData in users)
+            foreach (JObject userData in users)
             {
-                list.Users.Add(userData);
+                list.Users.Add(userData.ToObject<Dictionary<string, object>>());
             }
 
             list.Status = jsonObj["status"];
@@ -860,16 +853,15 @@ namespace putSharp
 
         private static SubtitlesList SubtitlesParser(string json)
         {
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            dynamic jsonObj = jsonSerializer.Deserialize<dynamic>(json);
+            dynamic jsonObj = JsonConvert.DeserializeObject<dynamic>(json);
 
             SubtitlesList list = new SubtitlesList();
 
-            object[] subtitles = jsonObj["subtitles"];
+            object[] subtitles = ((JArray)jsonObj["subtitles"]).ToObject<object[]>();
 
-            foreach (Dictionary<string, object> subtitle in subtitles)
+            foreach (JObject subtitle in subtitles)
             {
-                list.Subtitles.Add(subtitle);
+                list.Subtitles.Add(subtitle.ToObject<Dictionary<string, object>>());
             }
 
             list.Status = jsonObj["status"];
@@ -880,16 +872,15 @@ namespace putSharp
 
         private static EventsList EventsParser(string json)
         {
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            dynamic jsonObj = jsonSerializer.Deserialize<dynamic>(json);
+            dynamic jsonObj = JsonConvert.DeserializeObject<dynamic>(json);
 
             EventsList list = new EventsList();
 
-            object[] events = jsonObj["events"];
+            object[] events = ((JArray)jsonObj["events"]).ToObject<object[]>();
 
-            foreach (Dictionary<string, object> evnt in events)
+            foreach (JObject evnt in events)
             {
-                list.Events.Add(evnt);
+                list.Events.Add(evnt.ToObject<Dictionary<string, object>>());
             }
 
             list.Status = jsonObj["status"];
