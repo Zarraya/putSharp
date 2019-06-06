@@ -107,19 +107,19 @@ namespace putSharp
         #region Parsers
         private static CreatedZip CreatedZipParser(string json)
         {
-            dynamic jsonObj = JsonConvert.DeserializeObject<dynamic>(json);
+            JObject jsonObj = JsonConvert.DeserializeObject<JObject>(json);
 
             CreatedZip zip = new CreatedZip();            
 
-            zip.Status = jsonObj["status"];
-            zip.ZipID = jsonObj["zip_id"];
+            zip.Status = jsonObj["status"].ToObject<string>();
+            zip.ZipID = jsonObj["zip_id"].ToObject<long>();
 
             return zip;
         }
 
         private static ZipsList ZipListParser(string json)
         {
-            dynamic jsonObj = JsonConvert.DeserializeObject<dynamic>(json);
+            JObject jsonObj = JsonConvert.DeserializeObject<JObject>(json);
 
             ZipsList list = new ZipsList();
 
@@ -130,14 +130,14 @@ namespace putSharp
                 list.Zips.Add(zip.ToObject<Dictionary<string, object>>());
             }
 
-            list.Status = jsonObj["status"];
+            list.Status = jsonObj["status"].ToObject<string>();
 
             return list;
         }
         
         private static Zip ZipParser(string json)
         {
-            dynamic jsonObj = JsonConvert.DeserializeObject<dynamic>(json);
+            JObject jsonObj = JsonConvert.DeserializeObject<JObject>(json);
 
             Zip zip = new Zip();
 
@@ -148,9 +148,9 @@ namespace putSharp
                 zip.MissingFiles.Add(file.ToObject<Dictionary<string, object>>());
             }
 
-            zip.Status = jsonObj["status"];
-            zip.Url = jsonObj["url"];
-            zip.Size = jsonObj["size"];
+            zip.Status = jsonObj["status"].ToObject<string>();
+            zip.Url = jsonObj["url"].ToObject<string>();
+            zip.Size = jsonObj["size"].ToObject<long>();
 
             return zip;
         }

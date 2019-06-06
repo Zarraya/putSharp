@@ -150,7 +150,7 @@ namespace putSharp
         #region Parsers
         private static FriendList FriendListParser(string json)
         {
-            dynamic jsonObj = JsonConvert.DeserializeObject<dynamic>(json);
+            JObject jsonObj = JsonConvert.DeserializeObject<JObject>(json);
 
             FriendList list = new FriendList();
 
@@ -161,16 +161,16 @@ namespace putSharp
                 list.Friends.Add(friend.ToObject<Dictionary<string, object>>());
             }
 
-            list.Status = jsonObj["status"];
+            list.Status = jsonObj["status"].ToObject<string>();
 
             return list;
         }
 
         private static string StatusParser(string json)
         {
-            dynamic jsonObj = JsonConvert.DeserializeObject<dynamic>(json);
+            JObject jsonObj = JsonConvert.DeserializeObject<JObject>(json);
 
-            return jsonObj["status"];
+            return jsonObj["status"].ToObject<string>();
         }
         #endregion
     }
