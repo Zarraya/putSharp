@@ -381,7 +381,7 @@ namespace putSharp
         #region Parsers
         private static Feed FeedParser(string json)
         {
-            dynamic jsonObj = JsonConvert.DeserializeObject<dynamic>(json);
+            JObject jsonObj = JsonConvert.DeserializeObject<JObject>(json);
 
             Feed feedResult = new Feed();
 
@@ -392,14 +392,14 @@ namespace putSharp
                 feedResult.FeedData.Add(data.Key, data.Value);
             }
 
-            feedResult.Status = jsonObj["status"];
+            feedResult.Status = jsonObj["status"].ToObject<string>();
 
             return feedResult;
         }
 
         private static FeedList FeedListParser(string json)
         {
-            dynamic jsonObj = JsonConvert.DeserializeObject<dynamic>(json);
+            JObject jsonObj = JsonConvert.DeserializeObject<JObject>(json);
 
             FeedList feeds = new FeedList();
 
@@ -410,16 +410,16 @@ namespace putSharp
                 feeds.Feeds.Add(feed.ToObject<Dictionary<string, object>>());
             }
 
-            feeds.Status = jsonObj["status"];
+            feeds.Status = jsonObj["status"].ToObject<string>();
 
             return feeds;
         }
 
         private static string StatusParser(string json)
         {
-            dynamic jsonObj = JsonConvert.DeserializeObject<dynamic>(json);
+            JObject jsonObj = JsonConvert.DeserializeObject<JObject>(json);
 
-            return jsonObj["status"];
+            return jsonObj["status"].ToObject<string>();
         }
         #endregion
     }

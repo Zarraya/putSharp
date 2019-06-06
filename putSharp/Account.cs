@@ -98,7 +98,7 @@ namespace putSharp
         #region Parsers
         private static AccountInfo AccountInfoParser(string json)
         {
-            dynamic jsonObj = JsonConvert.DeserializeObject<dynamic>(json);
+            JObject jsonObj = JsonConvert.DeserializeObject<JObject>(json);
 
             AccountInfo accountInfo = new AccountInfo();
 
@@ -109,14 +109,14 @@ namespace putSharp
                 accountInfo.Info.Add(data.Key, data.Value);
             }
 
-            accountInfo.Status = jsonObj["status"];
+            accountInfo.Status = jsonObj["status"].ToObject<string>();
 
             return accountInfo;
         }
 
         private static AccountSettings AccountSettingsParser(string json)
         {
-            dynamic jsonObj = JsonConvert.DeserializeObject<dynamic>(json);
+            JObject jsonObj = JsonConvert.DeserializeObject<JObject>(json);
 
             AccountSettings accountSettings = new AccountSettings();
 
@@ -127,7 +127,7 @@ namespace putSharp
                 accountSettings.Settings.Add(setting.Key, setting.Value);
             }
 
-            accountSettings.Status = jsonObj["status"];
+            accountSettings.Status = jsonObj["status"].ToObject<string>();
 
             return accountSettings;
         }
