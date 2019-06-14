@@ -362,6 +362,11 @@ namespace putSharp
             }
         }
 
+        public static string GetMP4Url(string accessToken, long fileID)
+        {
+            return $"{_baseURL}{fileID}/mp4/download?oauth_token={accessToken}";
+        }
+
         public void Download(int streams, long fileID, string downloadPath)
         {
             string url = $"{_baseURL}{fileID}/download?oauth_token={_accessToken}";
