@@ -341,6 +341,27 @@ namespace putSharp
             }
         }
 
+        public string GetDownloadURL(long fileID)
+        {
+            string url = $"{_baseURL}{fileID}/url?oauth_token={_accessToken}";
+
+            string json = _client.DownloadString(url);
+
+            return DownloadURLParser(json);
+        }
+        
+        public static string GetDownloadURL(string accessToken, long fileID)
+        {
+            string url = $"{_baseURL}{fileID}/url?oauth_token={accessToken}";
+
+            using (WebClient client = new WebClient())
+            {
+                string json = client.DownloadString(url);
+
+                return DownloadURLParser(json);
+            }
+        }
+
         public void Download(int streams, long fileID, string downloadPath)
         {
             string url = $"{_baseURL}{fileID}/download?oauth_token={_accessToken}";
@@ -813,6 +834,13 @@ namespace putSharp
             status.Status = jsonObj["status"].ToObject<string>();
 
             return status;
+        }
+
+        private static string DownloadURLParser(string json)
+        {
+            JObject jsonObj = JsonConvert.DeserializeObject<JObject>(json);
+
+            return jsonObj["url"].ToObject<string>();
         }
 
         private static SharedFilesList SharedFilesParser(string json)
