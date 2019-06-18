@@ -303,9 +303,14 @@ namespace putSharp
         {
             string url = $"{_baseURL}{fileID}/mp4?oauth_token={_accessToken}";
 
-            string json = _client.DownloadString(url);
-            
-            return StatusParser(json);
+            using (WebClient client = new WebClient())
+            {
+                byte[] returnBytes = client.UploadData(url, new byte[0]);
+
+                string status = Encoding.ASCII.GetString(returnBytes);
+
+                return StatusParser(status);
+            }
         }
 
         public static string ConvertToMP4(string accessToken, long fileID)
@@ -314,9 +319,11 @@ namespace putSharp
 
             using (WebClient client = new WebClient())
             {
-                string json = client.DownloadString(url);
-                
-                return StatusParser(json);
+                byte[] returnBytes = client.UploadData(url, new byte[0]);
+
+                string status = Encoding.ASCII.GetString(returnBytes);
+
+                return StatusParser(status);
             }
         }
 
