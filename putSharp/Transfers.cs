@@ -240,7 +240,7 @@ namespace putSharp
         #region Parsers
         private static TransfersList TransferParser(string json)
         {
-            dynamic jsonObj = JsonConvert.DeserializeObject<dynamic>(json);
+            JObject jsonObj = JsonConvert.DeserializeObject<JObject>(json);
 
             TransfersList list = new TransfersList();
 
@@ -251,14 +251,14 @@ namespace putSharp
                 list.Transfers.Add(transfer.ToObject<Dictionary<string, object>>());
             }
 
-            list.Status = jsonObj["status"];
+            list.Status = jsonObj["status"].ToObject<string>();
 
             return list;
         }
 
         private static Transfer SingleTransferParser(string json)
         {
-            dynamic jsonObj = JsonConvert.DeserializeObject<dynamic>(json);
+            JObject jsonObj = JsonConvert.DeserializeObject<JObject>(json);
 
             Transfer list = new Transfer();
             

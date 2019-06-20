@@ -303,9 +303,14 @@ namespace putSharp
         {
             string url = $"{_baseURL}{fileID}/mp4?oauth_token={_accessToken}";
 
-            string json = _client.DownloadString(url);
-            
-            return StatusParser(json);
+            using (WebClient client = new WebClient())
+            {
+                byte[] returnBytes = client.UploadData(url, new byte[0]);
+
+                string status = Encoding.ASCII.GetString(returnBytes);
+
+                return StatusParser(status);
+            }
         }
 
         public static string ConvertToMP4(string accessToken, long fileID)
@@ -314,9 +319,11 @@ namespace putSharp
 
             using (WebClient client = new WebClient())
             {
-                string json = client.DownloadString(url);
-                
-                return StatusParser(json);
+                byte[] returnBytes = client.UploadData(url, new byte[0]);
+
+                string status = Encoding.ASCII.GetString(returnBytes);
+
+                return StatusParser(status);
             }
         }
 
@@ -339,6 +346,32 @@ namespace putSharp
                 
                 return MP4StatusParser(json);
             }
+        }
+
+        public string GetDownloadURL(long fileID)
+        {
+            string url = $"{_baseURL}{fileID}/url?oauth_token={_accessToken}";
+
+            string json = _client.DownloadString(url);
+
+            return DownloadURLParser(json);
+        }
+        
+        public static string GetDownloadURL(string accessToken, long fileID)
+        {
+            string url = $"{_baseURL}{fileID}/url?oauth_token={accessToken}";
+
+            using (WebClient client = new WebClient())
+            {
+                string json = client.DownloadString(url);
+
+                return DownloadURLParser(json);
+            }
+        }
+
+        public static string GetMP4Url(string accessToken, long fileID)
+        {
+            return $"{_baseURL}{fileID}/mp4/download?oauth_token={accessToken}";
         }
 
         public void Download(int streams, long fileID, string downloadPath)
@@ -749,7 +782,7 @@ namespace putSharp
         #region Parsers
         private static FileListResult FileListParser(string json)
         {
-            dynamic jsonObj = JsonConvert.DeserializeObject<dynamic>(json);
+            JObject jsonObj = JsonConvert.DeserializeObject<JObject>(json);
 
             FileListResult result = new FileListResult();
 
@@ -761,14 +794,14 @@ namespace putSharp
             }
 
             result.ParentFile = ((JObject)jsonObj["parent"]).ToObject<Dictionary<string, object>>();
-            result.Status = jsonObj["status"];
+            result.Status = jsonObj["status"].ToObject<string>();
 
             return result;
         }
 
         private static SearchResult SearchResultParser(string json)
         {
-            dynamic jsonObj = JsonConvert.DeserializeObject<dynamic>(json);
+            JObject jsonObj = JsonConvert.DeserializeObject<JObject>(json);
             
             SearchResult result = new SearchResult();
 
@@ -779,45 +812,52 @@ namespace putSharp
                 result.Files.Add(fileData.ToObject<Dictionary<string, object>>());
             }
 
-            result.Status = jsonObj["status"];
-            result.NextPageURL = jsonObj["next"];
+            result.Status = jsonObj["status"].ToObject<string>();
+            result.NextPageURL = jsonObj["next"].ToObject<string>();
             return result;
         }
 
         private static DataTypes.File SingleFileParser(string json)
         {
-            dynamic jsonObj = JsonConvert.DeserializeObject<dynamic>(json);
+            JObject jsonObj = JsonConvert.DeserializeObject<JObject>(json);
 
             DataTypes.File file = new DataTypes.File();
 
             file.Data = ((JObject)jsonObj["file"]).ToObject<Dictionary<string, object>>();
-            file.Status = jsonObj["status"];
+            file.Status = jsonObj["status"].ToObject<string>();
 
             return file;
         }
 
         private static string StatusParser(string json)
         {
-            dynamic jsonObj = JsonConvert.DeserializeObject<dynamic>(json);
+            JObject jsonObj = JsonConvert.DeserializeObject<JObject>(json);
 
-            return jsonObj["status"];
+            return jsonObj["status"].ToObject<string>();
         }
 
         private static MP4Status MP4StatusParser(string json)
         {
-            dynamic jsonObj = JsonConvert.DeserializeObject<dynamic>(json);
+            JObject jsonObj = JsonConvert.DeserializeObject<JObject>(json);
 
             MP4Status status = new MP4Status();
 
             status.Mp4 = ((JObject)jsonObj["mp4"]).ToObject<Dictionary<string, object>>();
-            status.Status = jsonObj["status"];
+            status.Status = jsonObj["status"].ToObject<string>();
 
             return status;
         }
 
+        private static string DownloadURLParser(string json)
+        {
+            JObject jsonObj = JsonConvert.DeserializeObject<JObject>(json);
+
+            return jsonObj["url"].ToObject<string>();
+        }
+
         private static SharedFilesList SharedFilesParser(string json)
         {
-            dynamic jsonObj = JsonConvert.DeserializeObject<dynamic>(json);
+            JObject jsonObj = JsonConvert.DeserializeObject<JObject>(json);
 
             SharedFilesList list = new SharedFilesList();
 
@@ -828,14 +868,14 @@ namespace putSharp
                 list.Files.Add(fileData.ToObject<Dictionary<string, object>>());
             }
 
-            list.Status = jsonObj["status"];
+            list.Status = jsonObj["status"].ToObject<string>();
 
             return list;
         }
 
         private static UserList UserListParser(string json)
         {
-            dynamic jsonObj = JsonConvert.DeserializeObject<dynamic>(json);
+            JObject jsonObj = JsonConvert.DeserializeObject<JObject>(json);
 
             UserList list = new UserList();
 
@@ -846,14 +886,14 @@ namespace putSharp
                 list.Users.Add(userData.ToObject<Dictionary<string, object>>());
             }
 
-            list.Status = jsonObj["status"];
+            list.Status = jsonObj["status"].ToObject<string>();
 
             return list;
         }
 
         private static SubtitlesList SubtitlesParser(string json)
         {
-            dynamic jsonObj = JsonConvert.DeserializeObject<dynamic>(json);
+            JObject jsonObj = JsonConvert.DeserializeObject<JObject>(json);
 
             SubtitlesList list = new SubtitlesList();
 
@@ -864,15 +904,15 @@ namespace putSharp
                 list.Subtitles.Add(subtitle.ToObject<Dictionary<string, object>>());
             }
 
-            list.Status = jsonObj["status"];
-            list.Default = jsonObj["default"];
+            list.Status = jsonObj["status"].ToObject<string>();
+            list.Default = jsonObj["default"].ToObject<string>();
 
             return list;
         }
 
         private static EventsList EventsParser(string json)
         {
-            dynamic jsonObj = JsonConvert.DeserializeObject<dynamic>(json);
+            JObject jsonObj = JsonConvert.DeserializeObject<JObject>(json);
 
             EventsList list = new EventsList();
 
@@ -883,7 +923,7 @@ namespace putSharp
                 list.Events.Add(evnt.ToObject<Dictionary<string, object>>());
             }
 
-            list.Status = jsonObj["status"];
+            list.Status = jsonObj["status"].ToObject<string>();
 
             return list;
         }
