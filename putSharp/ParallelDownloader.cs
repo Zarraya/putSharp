@@ -48,12 +48,12 @@ namespace putSharp
                 fileName = disposition.Substring(disposition.IndexOf("filename") + 9);
             }
             
-            if (!downloadPath.EndsWith(Path.DirectorySeparatorChar.ToString()))
-            {
-                downloadPath += Path.DirectorySeparatorChar;
-            }
+            //if (!downloadPath.EndsWith(Path.DirectorySeparatorChar.ToString()))
+            //{
+            //    downloadPath += Path.DirectorySeparatorChar;
+            //}
 
-            downloadPath += fileName;
+            //downloadPath += fileName;
 
             if (System.IO.File.Exists(downloadPath))
             {
