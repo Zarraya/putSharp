@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 
 namespace putSharp.DataTypes
 {
@@ -9,5 +11,9 @@ namespace putSharp.DataTypes
 
         public Dictionary<string, object> Info { get => _info; set => _info = value; }
         public string Status { get => status; set => status = value; }
+
+        public string Username => (string) _info["username"];
+        public DateTime PlanExpirationDate => (DateTime) _info["plan_expiration_date"];
+        public long AvailableBytes => (long) ((JObject)_info["disk"])["avail"];
     }
 }

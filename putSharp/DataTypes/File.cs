@@ -30,6 +30,7 @@ namespace putSharp.DataTypes
         public long Size => (long)_data["size"];
         public long StartFrom => (long)_data["start_from"];
         public DateTime UpdatedAt => (DateTime)_data["updated_at"];
+        public List<File> Children { get; } = new List<File>();
 
 
         #region Overrides of Object

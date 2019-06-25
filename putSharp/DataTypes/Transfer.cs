@@ -33,9 +33,11 @@ namespace putSharp.DataTypes
         public long Size => (long) _data["size"];
         public string Source => (string) _data["source"];
         public string Status => (string) _data["status"];
+        public string StatusMessage => (string) _data["status_message"];
         public long SubscriptionId => (long) _data["subscription_id"];
         public string TrackerMessage => (string) _data["tracker_message"];
         public string Type => (string) _data["type"];
+        public long CompletionPercent => (long) _data["completion_percent"];
 
         #region Overrides of Object
 

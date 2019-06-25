@@ -374,6 +374,16 @@ namespace putSharp
             return $"{_baseURL}{fileID}/mp4/download?oauth_token={accessToken}";
         }
 
+        public static string GetMP4StreamUrl(string accessToken, long fileID)
+        {
+            return $"{_baseURL}{fileID}/hls/media.m3u8?oauth_token={accessToken}&subtitle_key=all";
+        }
+
+        public static string GetAudioStreamUrl(string accessToken, long fileID)
+        {
+            return $"{_baseURL}{fileID}/stream?oauth_token={accessToken}";
+        }
+
         public void Download(int streams, long fileID, string downloadPath)
         {
             string url = $"{_baseURL}{fileID}/download?oauth_token={_accessToken}";
