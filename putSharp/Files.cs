@@ -800,10 +800,10 @@ namespace putSharp
 
             foreach (JObject fileData in files)
             {
-                result.Files.Add(fileData.ToObject<Dictionary<string,object>>());
+                result.Files.Add(fileData.ToObject<SerializableDict<string,object>>());
             }
 
-            result.ParentFile = ((JObject)jsonObj["parent"]).ToObject<Dictionary<string, object>>();
+            result.ParentFile = ((JObject)jsonObj["parent"]).ToObject<SerializableDict<string, object>>();
             result.Status = jsonObj["status"].ToObject<string>();
 
             return result;
@@ -833,7 +833,7 @@ namespace putSharp
 
             DataTypes.File file = new DataTypes.File();
 
-            file.Data = ((JObject)jsonObj["file"]).ToObject<Dictionary<string, object>>();
+            file.Data = ((JObject)jsonObj["file"]).ToObject<SerializableDict<string, object>>();
             file.Status = jsonObj["status"].ToObject<string>();
 
             return file;
