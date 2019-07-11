@@ -30,6 +30,11 @@ namespace putSharp
         {
             foreach (var key in this.Keys)
             {
+                if(this[key] == null)
+                {
+                    continue;
+                }
+
                 writer.WriteStartElement("Language");
                 writer.WriteAttributeString("Title", key.ToString());
                 writer.WriteAttributeString("Value", this[key].ToString());
