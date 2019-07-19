@@ -10,7 +10,7 @@ namespace putSharp
     {
         private readonly string _rawString;
 
-        private readonly Dictionary<string,string> _regexPatterns = new Dictionary<string, string>()
+        private readonly Dictionary<string, string> _regexPatterns = new Dictionary<string, string>()
         {
             {"pretty", "S\\d{1,2}[\\-\\.\\s_]?E\\d{1,2}"},
             {"tricky", "[^\\d]\\d{1,2}[X\\-\\.\\s_]\\d{1,2}([^\\d]|$)"},
@@ -61,28 +61,41 @@ namespace putSharp
 
             if (match.Success)
             {
-                return match.Value;
+                if (!IsSurroundSoundType(match.Value))
+                {
+                    return match.Value;
+                }
             }
 
             match = Regex.Match(_rawString, _regexPatterns["tricky"], RegexOptions.IgnoreCase);
 
             if (match.Success)
             {
-                return match.Value.Substring(1);
+                string value = match.Value.Substring(1);
+                if (!IsSurroundSoundType(value))
+                {
+                    return value;
+                }
             }
 
             match = Regex.Match(_rawString, _regexPatterns["combined"], RegexOptions.IgnoreCase);
 
             if (match.Success)
             {
-                return match.Value;
+                if (!IsSurroundSoundType(match.Value))
+                {
+                    return match.Value;             
+                }
             }
 
             match = Regex.Match(_rawString, _regexPatterns["altSeason"], RegexOptions.IgnoreCase);
 
             if (match.Success)
             {
-                return match.Value;
+                if (!IsSurroundSoundType(match.Value))
+                {
+                    return match.Value;
+                }
             }
 
             match = Regex.Match(_rawString, _regexPatterns["altSeason2"], RegexOptions.IgnoreCase);
@@ -90,15 +103,15 @@ namespace putSharp
             if (match.Success)
             {
                 string str = CleanedString(match.Value);
-                string[] vals = new[] {"264", "720"};
-                if (vals.Contains(str.Substring(1, 3)))
+                if (!IsSurroundSoundType(str))
                 {
+                    string[] vals = new[] { "264", "720" };
+                    if (!vals.Contains(str.Substring(1, 3)))
+                    {
+                        return str;
+                    }
+                }
 
-                }
-                else
-                {
-                    return str;
-                }
             }
 
             return null;
@@ -273,6 +286,18 @@ namespace putSharp
             cleaned = cleaned.Trim(" -.([]{}))_".ToCharArray());
             cleaned = cleaned.Replace(".", " ");
             return cleaned;
+        }
+
+        private bool IsSurroundSoundType(string s)
+        {
+            string cleaned = s.Trim(" -.([]{}))_".ToCharArray());
+
+            if (cleaned == "2.1" || cleaned == "5.1" || cleaned == "7.1")
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 
