@@ -262,10 +262,8 @@ namespace putSharp
 
                 return clean;
             }
-            else
-            {
-                return CleanedString(_rawString);
-            }
+            
+            return null;
 
         }
 
