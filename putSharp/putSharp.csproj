@@ -49,6 +49,7 @@
     <Compile Include="DataTypes\AccountInfo.cs" />
     <Compile Include="DataTypes\AccountSettings.cs" />
     <Compile Include="DataTypes\CreatedZip.cs" />
+    <Compile Include="DataTypes\DownloadResult.cs" />
     <Compile Include="DataTypes\Enums.cs" />
     <Compile Include="DataTypes\EventsList.cs" />
     <Compile Include="DataTypes\Feed.cs" />
@@ -67,6 +68,7 @@
     <Compile Include="DataTypes\UserList.cs" />
     <Compile Include="DataTypes\Zip.cs" />
     <Compile Include="DataTypes\ZipsList.cs" />
+    <Compile Include="DownloadManager.cs" />
     <Compile Include="Feeds.cs" />
     <Compile Include="Files.cs" />
     <Compile Include="Friends.cs" />

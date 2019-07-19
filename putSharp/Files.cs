@@ -8,6 +8,7 @@ using System.Text;
 using System.Collections.Specialized;
 using putSharp.DataTypes;
 using Newtonsoft.Json.Linq;
+using System.Threading.Tasks;
 
 namespace putSharp
 {
@@ -384,7 +385,7 @@ namespace putSharp
             return $"{_baseURL}{fileID}/stream?oauth_token={accessToken}";
         }
 
-        public void Download(int streams, long fileID, string downloadPath)
+        public async void Download(int streams, long fileID, string downloadPath, IProgress<double> progress)
         {
             string url = $"{_baseURL}{fileID}/download?oauth_token={_accessToken}";
 
@@ -393,22 +394,13 @@ namespace putSharp
 
             if(streams > 1)
             {
-                ParallelDownload result = ParallelDownloader.Download(downloadURL, downloadPath, streams);
+                Task<ParallelDownload> download = Task.Run(() => { return ParallelDownloader.Download(downloadURL, downloadPath, streams); });
+                //ParallelDownload result = await ParallelDownloader.Download(downloadURL, downloadPath, streams);
             }
             else
             {
-                byte[] data = _client.DownloadData(downloadURL);
-
-                string disposition = _client.ResponseHeaders["Content-Disposition"];
-                string fileName = disposition.Substring(disposition.IndexOf("filename") + 9);
-
-                //if (!downloadPath.EndsWith(Path.DirectorySeparatorChar.ToString()))
-                //{
-                //    downloadPath += Path.DirectorySeparatorChar;
-                //}
-
-                //downloadPath += fileName;
-
+                DownloadResult data = await DownloadManager.DownloadAsync(url, progress);
+                
                 if (System.IO.File.Exists(downloadPath))
                 {
                     System.IO.File.Delete(downloadPath);
@@ -416,14 +408,14 @@ namespace putSharp
 
                 FileStream stream = new FileStream(downloadPath, FileMode.OpenOrCreate);
 
-                stream.Write(data, 0, data.Length);
+                stream.Write(data.Data, 0, data.Data.Length);
 
                 stream.Flush();
                 stream.Close();
             }
         }
 
-        public static void Download(int streams, long fileID, string downloadPath, string accessToken)
+        public async static void Download(int streams, long fileID, string downloadPath, IProgress<double> progress, string accessToken)
         {
             string url = $"{_baseURL}{fileID}/download?oauth_token={accessToken}";
 
@@ -434,22 +426,12 @@ namespace putSharp
 
                 if (streams > 1)
                 {
-                    ParallelDownload result = ParallelDownloader.Download(downloadURL, downloadPath, streams);
+                    ParallelDownload result = await ParallelDownloader.Download(downloadURL, downloadPath, streams);
                 }
                 else
                 {
-                    byte[] data = client.DownloadData(downloadURL);
-
-                    string disposition = client.ResponseHeaders["Content-Disposition"];
-                    string fileName = disposition.Substring(disposition.IndexOf("filename") + 9);
-
-                    if (!downloadPath.EndsWith(Path.DirectorySeparatorChar.ToString()))
-                    {
-                        downloadPath += Path.DirectorySeparatorChar;
-                    }
-
-                    downloadPath += fileName;
-
+                    DownloadResult data = await DownloadManager.DownloadAsync(url, progress);
+                    
                     if (System.IO.File.Exists(downloadPath))
                     {
                         System.IO.File.Delete(downloadPath);
@@ -457,7 +439,7 @@ namespace putSharp
 
                     FileStream stream = new FileStream(downloadPath, FileMode.OpenOrCreate);
 
-                    stream.Write(data, 0, data.Length);
+                    stream.Write(data.Data, 0, data.Data.Length);
 
                     stream.Flush();
                     stream.Close();

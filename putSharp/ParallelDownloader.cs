@@ -19,7 +19,7 @@ namespace putSharp
             ServicePointManager.MaxServicePointIdleTime = 1000;
         }
 
-        public static ParallelDownload Download(string url, string downloadPath, int parallelStreams = 0, bool validateSSL = false)
+        public async static Task<ParallelDownload> Download(string url, string downloadPath, int parallelStreams = 0, bool validateSSL = false)
         {
             if (!validateSSL)
             {

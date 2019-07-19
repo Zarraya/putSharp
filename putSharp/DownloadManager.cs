@@ -10,7 +10,7 @@ namespace putSharp
     {
         static HttpClient _client = new HttpClient();
         
-        public static async Task<byte[]> DownloadAsync(
+        public static async Task<DataTypes.DownloadResult> DownloadAsync(
             string url,
             IProgress<double> progress = default(IProgress<double>), 
             CancellationToken token = default(CancellationToken))
@@ -24,6 +24,9 @@ namespace putSharp
                     throw new Exception($"Error in download: {response.StatusCode}");
 
                 long total = response.Content.Headers.ContentLength ?? -1L;
+
+                DataTypes.DownloadResult result = new DataTypes.DownloadResult();
+                result.Headers = response.Content.Headers;
 
                 using (Stream streamToReadFrom = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
                 {
@@ -53,7 +56,10 @@ namespace putSharp
                     } while (isMoreToRead);
 
                     output.Close();
-                    return output.ToArray();
+
+                    result.Data = output.ToArray();
+
+                    return result;
                 }
             }
         }
