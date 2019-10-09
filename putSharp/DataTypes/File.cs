@@ -14,12 +14,12 @@ namespace putSharp.DataTypes
         public string ContentType => (string)_data["content_type"];
         public string Crc32 => (string)_data["crc32"];
         public DateTime CreatedAt => (DateTime)_data["created_at"];
-        public string Extension => (string)_data["extension"];
+        public string Extension => _data.ContainsKey("extension")? (string)_data["extension"]: null;
         public string FileType => (string)_data["file_type"];
         public DateTime FirstAccessedAt => (DateTime)_data["first_accessed_at"];
         public string FolderType => (string)_data["folder_type"];
         public string Icon => (string)_data["icon"];
-        public long Id => (long)_data["id"];
+        public long Id => long.Parse(_data["id"].ToString());
         public bool IsHidden => (bool)_data["is_hidden"];
         public bool IsMp4Available => (bool)_data["is_mp4_available"];
         public bool IsShared => (bool)_data["is_shared"];

@@ -385,7 +385,7 @@ namespace putSharp
             return $"{_baseURL}{fileID}/stream?oauth_token={accessToken}";
         }
 
-        public async void Download(int streams, long fileID, string downloadPath, IProgress<double> progress)
+        public async Task Download(int streams, long fileID, string downloadPath, IProgress<double> progress)
         {
             string url = $"{_baseURL}{fileID}/download?oauth_token={_accessToken}";
 
@@ -415,7 +415,7 @@ namespace putSharp
             }
         }
 
-        public async static void Download(int streams, long fileID, string downloadPath, IProgress<double> progress, string accessToken)
+        public static async Task Download(int streams, long fileID, string downloadPath, IProgress<double> progress, string accessToken)
         {
             string url = $"{_baseURL}{fileID}/download?oauth_token={accessToken}";
 
