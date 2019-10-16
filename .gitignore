@@ -1,3 +1,7 @@
 putSharp/bin/
 .vs/
 obj/
+*.lock
+*.ide-shm
+*.ide-wal
+*.cache
