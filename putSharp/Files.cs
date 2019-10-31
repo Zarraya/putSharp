@@ -784,11 +784,20 @@ namespace putSharp
             {
                 result.Files.Add(fileData.ToObject<SerializableDict<string,object>>());
             }
-
-            result.ParentFile = ((JObject)jsonObj["parent"]).ToObject<SerializableDict<string, object>>();
+            
+            if (jsonObj.TryGetValue("parent", out JToken token) && !IsNullOrEmpty(token))
+            {
+                result.ParentFile = ((JObject)jsonObj["parent"]).ToObject<SerializableDict<string, object>>();
+            }
+            
             result.Status = jsonObj["status"].ToObject<string>();
 
             return result;
+        }
+        
+        private static bool IsNullOrEmpty(JToken token)
+        {
+            return token == null || token.Type == JTokenType.Array && !token.HasValues || (token.Type == JTokenType.Object && !token.HasValues || token.Type == JTokenType.String && ((object) token).ToString() == string.Empty) || token.Type == JTokenType.Null;
         }
 
         private static SearchResult SearchResultParser(string json)
