@@ -5,3 +5,4 @@ obj/
 *.ide-shm
 *.ide-wal
 *.cache
+.vs/putSharp/v15/.suo
