@@ -861,6 +861,11 @@ namespace putSharp
 
             return result;
         }
+        
+        private static bool IsNullOrEmpty(JToken token)
+        {
+            return token == null || token.Type == JTokenType.Array && !token.HasValues || (token.Type == JTokenType.Object && !token.HasValues || token.Type == JTokenType.String && ((object) token).ToString() == string.Empty) || token.Type == JTokenType.Null;
+        }
 
         private static SearchResult SearchResultParser(string json)
         {

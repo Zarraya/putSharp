@@ -28,7 +28,19 @@ namespace putSharp.DataTypes
         public long ParentId => (long)_data["parent_id"];
         public string Screenshot => (string)_data["screenshot"];
         public long Size => (long)_data["size"];
-        public long StartFrom => (long)_data["start_from"];
+
+        public long StartFrom
+        {
+            get
+            {
+                if (!_data.ContainsKey("start_from"))
+                {
+                    return 0;
+                }
+
+                return (long) _data["start_from"];
+            }
+        }
         public DateTime UpdatedAt => (DateTime)_data["updated_at"];
         public List<File> Children { get; } = new List<File>();
 
