@@ -9,6 +9,7 @@ using System.Collections.Specialized;
 using putSharp.DataTypes;
 using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
+using File = System.IO.File;
 
 namespace putSharp
 {
@@ -470,12 +471,8 @@ namespace putSharp
                     System.IO.File.Delete(downloadPath);
                 }
 
-                FileStream stream = new FileStream(downloadPath, FileMode.OpenOrCreate);
-
-                stream.Write(data.Data, 0, data.Data.Length);
-
-                stream.Flush();
-                stream.Close();
+                File.Copy(data.TempFilePath, downloadPath);
+                File.Delete(data.TempFilePath);
             }
         }
 
@@ -485,8 +482,12 @@ namespace putSharp
 
             using (WebClient client = new WebClient())
             {
-                client.DownloadString(url);
-                string downloadURL = client.ResponseHeaders["Location"];
+                HttpWebRequest request = (HttpWebRequest) WebRequest.Create(url);
+                request.MaximumResponseHeadersLength = -1;
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                string downloadURL = response.GetResponseHeader("Location");
+                //client.DownloadString(url);
+                //string downloadURL = client.ResponseHeaders["Location"];
 
                 if (streams > 1)
                 {
@@ -500,13 +501,9 @@ namespace putSharp
                     {
                         System.IO.File.Delete(downloadPath);
                     }
-
-                    FileStream stream = new FileStream(downloadPath, FileMode.OpenOrCreate);
-
-                    stream.Write(data.Data, 0, data.Data.Length);
-
-                    stream.Flush();
-                    stream.Close();
+                    
+                    File.Copy(data.TempFilePath, downloadPath);
+                    File.Delete(data.TempFilePath);
                 }
             }
         }

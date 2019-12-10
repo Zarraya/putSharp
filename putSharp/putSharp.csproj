@@ -69,6 +69,7 @@
     <Compile Include="DataTypes\Zip.cs" />
     <Compile Include="DataTypes\ZipsList.cs" />
     <Compile Include="DownloadManager.cs" />
+    <Compile Include="Downpour.cs" />
     <Compile Include="Feeds.cs" />
     <Compile Include="Files.cs" />
     <Compile Include="Friends.cs" />

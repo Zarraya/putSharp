@@ -80,12 +80,13 @@ namespace putSharp
       "wma",
       "wv"
     };
-    private readonly string[] _videoExtensions = new string[32]
+    private readonly string[] _videoExtensions = new string[33]
     {
       "mkv",
       "flv",
       "vob",
       "ogv",
+      "ogm",
       "drc",
       "gifv",
       "mng",
@@ -161,22 +162,51 @@ namespace putSharp
         }).Contains<string>(s.Substring(1, 3)))
           return s;
       }
+
+      Match match6 = Regex.Match(this._rawString, @"[ _-]\d{1,3}[ _-]", RegexOptions.IgnoreCase);
+      if (match6.Success)
+      {
+          return match6.Value;
+      }
+
+      Match match7 = Regex.Match(this._rawString, @"[ _-]\d{1,3}" + Path.GetExtension(this._rawString), RegexOptions.IgnoreCase);
+      if (match7.Success)
+      {
+          return match7.Value;
+      }
+
+      Match match8 = Regex.Match(this._rawString, @"Episode\d{1,3}[. -]", RegexOptions.IgnoreCase);
+      if (match8.Success)
+      {
+          return match8.Value;
+      }
+
       return (string) null;
     }
 
     public string GetSeason()
     {
-      string seasonEpisode = this.GetSeasonEpisode();
-      if (string.IsNullOrEmpty(seasonEpisode))
-        return (string) null;
-      if (seasonEpisode.Length > 7)
-        return Regex.Match(this._rawString, this._regexPatterns["altSeasonSingle"], RegexOptions.IgnoreCase).Value.Remove(0, 6);
-      if (seasonEpisode.Length == 3)
-        return this.CleanedString(seasonEpisode.Substring(0, 1));
-      string s = ((IEnumerable<string>) seasonEpisode.Split("eExX-._ ".ToCharArray())).ToList<string>()[0];
-      if (s.Length <= 2 && s.Length >= 1)
-        return this.CleanedString(s);
-      return this.CleanedString(s.Substring(1));
+        try
+        {
+            string seasonEpisode = this.GetSeasonEpisode();
+            if (string.IsNullOrEmpty(seasonEpisode))
+                return (string) null;
+            if (seasonEpisode.Length > 7)
+                return Regex.Match(this._rawString, this._regexPatterns["altSeasonSingle"], RegexOptions.IgnoreCase)
+                    .Value.Remove(0, 6);
+            if (seasonEpisode.Length == 3)
+                return this.CleanedString(seasonEpisode.Substring(0, 1));
+            string s = ((IEnumerable<string>) seasonEpisode.Split("eExX-._ ".ToCharArray())).ToList<string>()[0];
+            if (s.Length <= 2 && s.Length >= 1)
+                return this.CleanedString(s);
+            if (s.Length == 0)
+                return null;
+            return this.CleanedString(s.Substring(1));
+        }
+        catch
+        {
+            return null;
+        }
     }
 
     public string GetEpisode()
@@ -200,11 +230,25 @@ namespace putSharp
       string str = Path.GetExtension(this._rawString);
       if (!string.IsNullOrEmpty(str))
         str = str.Remove(0, 1);
-      if (((IEnumerable<string>) this._videoExtensions).Contains<string>(str) || ((IEnumerable<string>) this._subtitleExtensions).Contains<string>(str))
-        return this.GetSeason() != null && this.GetEpisode() != null ? DownpourType.Tv : DownpourType.Movie;
+      if (((IEnumerable<string>) this._videoExtensions).Contains<string>(str) ||
+          ((IEnumerable<string>) this._subtitleExtensions).Contains<string>(str))
+      {
+          if (this.GetSeason() != null && this.GetEpisode() != null)
+          {
+              return DownpourType.Tv;
+          }
+          else if (!string.IsNullOrEmpty(GetSeasonEpisode()))
+          {
+              return DownpourType.Tv;
+          }
+          else
+          {
+              return DownpourType.Movie;
+          }
+      }
       if (((IEnumerable<string>) this._musicExtensions).Contains<string>(str))
         return DownpourType.Music;
-      return this.GetSeason() != null && this.GetEpisode() != null ? DownpourType.Tv : DownpourType.Movie;
+      return DownpourType.None;
     }
 
     public string GetYear()
@@ -256,6 +300,13 @@ namespace putSharp
 
     private string CleanedString(string s)
     {
+        Match match = Regex.Match(s, @"^[{[(].*[}\])]", RegexOptions.IgnoreCase);
+
+        if (match.Success)
+        {
+            s = s.Substring(s.IndexOf(match.Value) + match.Value.Length);
+        }
+
       return s.Trim(" -.([]{}))_".ToCharArray()).Replace(".", " ");
     }
 
@@ -270,6 +321,10 @@ namespace putSharp
     {
         Tv,
         Movie,
-        Music
+        Music,
+        Image,
+        Archive,
+        Document,
+        None
     }
 }

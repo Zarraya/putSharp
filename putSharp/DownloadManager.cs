@@ -28,13 +28,15 @@ namespace putSharp
                 DataTypes.DownloadResult result = new DataTypes.DownloadResult();
                 result.Headers = response.Content.Headers;
 
+                string tempLocation = Path.GetTempPath() + Guid.NewGuid() + "putSync.tmp";
+
                 using (Stream streamToReadFrom = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
                 {
                     long totalRead = 0L;
                     byte[] buffer = new byte[2048];
                     bool isMoreToRead = true;
                     //FileStream output = new FileStream(fileWriteTo, FileMode.Create);
-                    MemoryStream output = new MemoryStream();
+                    FileStream output = new FileStream(tempLocation, FileMode.OpenOrCreate);
                     do
                     {
                         token.ThrowIfCancellationRequested();
@@ -55,9 +57,10 @@ namespace putSharp
 
                     } while (isMoreToRead);
 
+                    output.Flush();
                     output.Close();
 
-                    result.Data = output.ToArray();
+                    result.TempFilePath = tempLocation;
 
                     return result;
                 }
