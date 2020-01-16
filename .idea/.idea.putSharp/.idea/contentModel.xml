@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ContentModelStore">
+    <e p="$PROJECT_DIR$" t="IncludeFlat">
+      <e p="packages" t="ExcludeRecursive" />
+      <e p="putSharp" t="IncludeRecursive">
+        <e p="Account.cs" t="Include" />
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="DataTypes" t="Include">
+          <e p="AccountInfo.cs" t="Include" />
+          <e p="AccountSettings.cs" t="Include" />
+          <e p="CreatedZip.cs" t="Include" />
+          <e p="DownloadResult.cs" t="Include" />
+          <e p="Enums.cs" t="Include" />
+          <e p="EventsList.cs" t="Include" />
+          <e p="Feed.cs" t="Include" />
+          <e p="FeedList.cs" t="Include" />
+          <e p="File.cs" t="Include" />
+          <e p="FileListResult.cs" t="Include" />
+          <e p="FriendList.cs" t="Include" />
+          <e p="MP4Status.cs" t="Include" />
+          <e p="ParallelDownload.cs" t="Include" />
+          <e p="ParallelDownloadStreamRange.cs" t="Include" />
+          <e p="SearchResult.cs" t="Include" />
+          <e p="SharedFilesList.cs" t="Include" />
+          <e p="SubtitlesList.cs" t="Include" />
+          <e p="Transfer.cs" t="Include" />
+          <e p="TransfersList.cs" t="Include" />
+          <e p="UserList.cs" t="Include" />
+          <e p="Zip.cs" t="Include" />
+          <e p="ZipsList.cs" t="Include" />
+        </e>
+        <e p="DownloadManager.cs" t="Include" />
+        <e p="Downpour.cs" t="Include" />
+        <e p="Feeds.cs" t="Include" />
+        <e p="Files.cs" t="Include" />
+        <e p="Friends.cs" t="Include" />
+        <e p="obj" t="ExcludeRecursive" />
+        <e p="OOB.cs" t="Include" />
+        <e p="ParallelDownloader.cs" t="Include" />
+        <e p="Properties" t="Include">
+          <e p="AssemblyInfo.cs" t="Include" />
+        </e>
+        <e p="putSharp.csproj" t="IncludeRecursive" />
+        <e p="putSharpWebClient.cs" t="Include" />
+        <e p="SerializableDict.cs" t="Include" />
+        <e p="Transfers.cs" t="Include" />
+        <e p="Zips.cs" t="Include" />
+      </e>
+      <e p="putSharp.sln" t="IncludeFlat" />
+    </e>
+    <e p="$USER_HOME$/Downloads/Newtonsoft.Json.dll" t="Include" />
+    <e p="$USER_HOME$/Library/Caches/Rider2019.3/extResources" t="IncludeRecursive" />
+    <e p="$USER_HOME$/Library/Caches/Rider2019.3/resharper-host/local/Transient/ReSharperHost/v193/SolutionCaches/_putSharp.1533839218.00" t="ExcludeRecursive" />
+  </component>
+</project>
