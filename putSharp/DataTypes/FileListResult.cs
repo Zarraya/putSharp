@@ -15,6 +15,7 @@ namespace putSharp.DataTypes
         public List<SerializableDict<string, object>> Files { get => _files; set => _files = value; }
         public SerializableDict<string, object> ParentFile { get => _parentFile; set => _parentFile = value; }
         public string Status { get => _status; set => _status = value; }
+        public string Cursor { get; set; } = null;
 
         public List<File> GetFiles()
         {

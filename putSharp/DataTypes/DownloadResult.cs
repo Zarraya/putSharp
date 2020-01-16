@@ -9,10 +9,11 @@ namespace putSharp.DataTypes
 {
     public class DownloadResult
     {
-        private byte[] _data = null;
+        //private byte[] _data = null;
         private HttpContentHeaders _headers = null;
 
-        public byte[] Data { get => _data; set => _data = value; }
+        //public byte[] Data { get => _data; set => _data = value; }
+        public string TempFilePath { get; set; }
         public HttpContentHeaders Headers { get => _headers; set => _headers = value; }
     }
 }

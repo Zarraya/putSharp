@@ -9,6 +9,7 @@ using System.Collections.Specialized;
 using putSharp.DataTypes;
 using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
+using File = System.IO.File;
 
 namespace putSharp
 {
@@ -30,10 +31,76 @@ namespace putSharp
             string url = _baseURL + "list?parent_id="+ parentID +"&oauth_token=" + _accessToken;
 
             string json = _client.DownloadString(url);
-
-            JsonTextReader reader = new JsonTextReader(new StringReader(json));
-            
+                        
             return FileListParser(json);
+        }
+
+        public FileListResult ListAll(long parentID = 0)
+        {
+            string url = _baseURL + "list?parent_id=" + parentID + "&per_page=1000" + "&oauth_token=" + _accessToken;
+
+            string json = _client.DownloadString(url);
+            
+            FileListResult result = FileListParser(json);
+
+            while(!string.IsNullOrEmpty(result.Cursor))
+            {
+                url = _baseURL + "list/continue?oauth_token=" + _accessToken;
+
+                NameValueCollection par = new NameValueCollection();
+                par.Add("cursor", result.Cursor);
+                par.Add("per_page", "1000");
+
+                byte[] jsonBytes = _client.UploadValues(url, par);
+                json = Encoding.ASCII.GetString(jsonBytes);
+                                
+                List<SerializableDict<string, object>> data = new List<SerializableDict<string,object>>(result.Files);
+                SerializableDict<string, object> parent = result.ParentFile;
+
+                result = FileListParser(json);
+
+                result.Files.InsertRange(0, data);
+                result.ParentFile = parent;
+            }
+
+            return result;
+        }
+
+        public static FileListResult ListAll(string accessToken, long parentID = 0)
+        {
+            string url = _baseURL + "list?parent_id=" + parentID + "&per_page=1000" + "&oauth_token=" + accessToken;
+
+            FileListResult result;
+
+            using (WebClient client = new WebClient())
+            {
+
+                string json = client.DownloadString(url);
+
+                result = FileListParser(json);
+
+                while (!string.IsNullOrEmpty(result.Cursor))
+                {
+                    url = _baseURL + "list/continue?oauth_token=" + accessToken;
+
+                    NameValueCollection par = new NameValueCollection();
+                    par.Add("cursor", result.Cursor);
+                    par.Add("per_page", "1000");
+
+                    byte[] jsonBytes = client.UploadValues(url, par);
+                    json = Encoding.ASCII.GetString(jsonBytes);
+
+                    List<SerializableDict<string, object>> data = new List<SerializableDict<string, object>>(result.Files);
+                    SerializableDict<string, object> parent = result.ParentFile;
+
+                    result = FileListParser(json);
+
+                    result.Files.InsertRange(0, data);
+                    result.ParentFile = parent;
+                }
+            }
+
+            return result;
         }
 
         public static FileListResult List(string accessToken, long parentID = 0)
@@ -123,7 +190,6 @@ namespace putSharp
         public DataTypes.File CreateFolder(string folderName, long parentID)
         {
             string url = $"{_baseURL}create-folder?oauth_token={_accessToken}";
-            string paramaters = $"name={folderName}&parent_id={parentID}";
 
             NameValueCollection par = new NameValueCollection();
             par.Add("name", folderName);
@@ -138,7 +204,6 @@ namespace putSharp
         public static DataTypes.File CreateFolder(string accessToken, string folderName, long parentID)
         {
             string url = $"{_baseURL}create-folder?oauth_token={accessToken}";
-            string paramaters = $"name={folderName}&parent_id={parentID}";
 
             NameValueCollection par = new NameValueCollection();
             par.Add("name", folderName);
@@ -406,12 +471,8 @@ namespace putSharp
                     System.IO.File.Delete(downloadPath);
                 }
 
-                FileStream stream = new FileStream(downloadPath, FileMode.OpenOrCreate);
-
-                stream.Write(data.Data, 0, data.Data.Length);
-
-                stream.Flush();
-                stream.Close();
+                File.Copy(data.TempFilePath, downloadPath);
+                File.Delete(data.TempFilePath);
             }
         }
 
@@ -421,8 +482,12 @@ namespace putSharp
 
             using (WebClient client = new WebClient())
             {
-                client.DownloadString(url);
-                string downloadURL = client.ResponseHeaders["Location"];
+                HttpWebRequest request = (HttpWebRequest) WebRequest.Create(url);
+                request.MaximumResponseHeadersLength = -1;
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                string downloadURL = response.GetResponseHeader("Location");
+                //client.DownloadString(url);
+                //string downloadURL = client.ResponseHeaders["Location"];
 
                 if (streams > 1)
                 {
@@ -436,13 +501,9 @@ namespace putSharp
                     {
                         System.IO.File.Delete(downloadPath);
                     }
-
-                    FileStream stream = new FileStream(downloadPath, FileMode.OpenOrCreate);
-
-                    stream.Write(data.Data, 0, data.Data.Length);
-
-                    stream.Flush();
-                    stream.Close();
+                    
+                    File.Copy(data.TempFilePath, downloadPath);
+                    File.Delete(data.TempFilePath);
                 }
             }
         }
@@ -784,13 +845,16 @@ namespace putSharp
             {
                 result.Files.Add(fileData.ToObject<SerializableDict<string,object>>());
             }
-            
-            if (jsonObj.TryGetValue("parent", out JToken token) && !IsNullOrEmpty(token))
+
+            result.Status = jsonObj["status"]?.ToObject<string>();
+            result.Cursor = jsonObj["cursor"]?.ToObject<string>();
+
+            if (jsonObj["parent"] is JValue)
             {
-                result.ParentFile = ((JObject)jsonObj["parent"]).ToObject<SerializableDict<string, object>>();
+                return result;
             }
             
-            result.Status = jsonObj["status"].ToObject<string>();
+            result.ParentFile = ((JObject)jsonObj["parent"])?.ToObject<SerializableDict<string, object>>();            
 
             return result;
         }
@@ -806,15 +870,15 @@ namespace putSharp
             
             SearchResult result = new SearchResult();
 
-            object[] files = ((JArray)jsonObj["files"]).ToObject<object[]>();
+            object[] files = ((JArray)jsonObj["files"])?.ToObject<object[]>();
 
             foreach (JObject fileData in files)
             {
                 result.Files.Add(fileData.ToObject<Dictionary<string, object>>());
             }
 
-            result.Status = jsonObj["status"].ToObject<string>();
-            result.NextPageURL = jsonObj["next"].ToObject<string>();
+            result.Status = jsonObj["status"]?.ToObject<string>();
+            result.NextPageURL = jsonObj["next"]?.ToObject<string>();
             return result;
         }
 
@@ -824,8 +888,8 @@ namespace putSharp
 
             DataTypes.File file = new DataTypes.File();
 
-            file.Data = ((JObject)jsonObj["file"]).ToObject<SerializableDict<string, object>>();
-            file.Status = jsonObj["status"].ToObject<string>();
+            file.Data = ((JObject)jsonObj["file"])?.ToObject<SerializableDict<string, object>>();
+            file.Status = jsonObj["status"]?.ToObject<string>();
 
             return file;
         }
@@ -834,7 +898,7 @@ namespace putSharp
         {
             JObject jsonObj = JsonConvert.DeserializeObject<JObject>(json);
 
-            return jsonObj["status"].ToObject<string>();
+            return jsonObj["status"]?.ToObject<string>();
         }
 
         private static MP4Status MP4StatusParser(string json)
@@ -843,8 +907,8 @@ namespace putSharp
 
             MP4Status status = new MP4Status();
 
-            status.Mp4 = ((JObject)jsonObj["mp4"]).ToObject<Dictionary<string, object>>();
-            status.Status = jsonObj["status"].ToObject<string>();
+            status.Mp4 = ((JObject)jsonObj["mp4"])?.ToObject<Dictionary<string, object>>();
+            status.Status = jsonObj["status"]?.ToObject<string>();
 
             return status;
         }
@@ -853,7 +917,7 @@ namespace putSharp
         {
             JObject jsonObj = JsonConvert.DeserializeObject<JObject>(json);
 
-            return jsonObj["url"].ToObject<string>();
+            return jsonObj["url"]?.ToObject<string>();
         }
 
         private static SharedFilesList SharedFilesParser(string json)
@@ -862,14 +926,14 @@ namespace putSharp
 
             SharedFilesList list = new SharedFilesList();
 
-            object[] files = ((JArray)jsonObj["shared"]).ToObject<object[]>();
+            object[] files = ((JArray)jsonObj["shared"])?.ToObject<object[]>();
 
             foreach (JObject fileData in files)
             {
                 list.Files.Add(fileData.ToObject<Dictionary<string, object>>());
             }
 
-            list.Status = jsonObj["status"].ToObject<string>();
+            list.Status = jsonObj["status"]?.ToObject<string>();
 
             return list;
         }
@@ -880,14 +944,14 @@ namespace putSharp
 
             UserList list = new UserList();
 
-            object[] users = ((JArray)jsonObj["shared-with"]).ToObject<object[]>();
+            object[] users = ((JArray)jsonObj["shared-with"])?.ToObject<object[]>();
 
             foreach (JObject userData in users)
             {
                 list.Users.Add(userData.ToObject<Dictionary<string, object>>());
             }
 
-            list.Status = jsonObj["status"].ToObject<string>();
+            list.Status = jsonObj["status"]?.ToObject<string>();
 
             return list;
         }
@@ -898,15 +962,15 @@ namespace putSharp
 
             SubtitlesList list = new SubtitlesList();
 
-            object[] subtitles = ((JArray)jsonObj["subtitles"]).ToObject<object[]>();
+            object[] subtitles = ((JArray)jsonObj["subtitles"])?.ToObject<object[]>();
 
             foreach (JObject subtitle in subtitles)
             {
                 list.Subtitles.Add(subtitle.ToObject<Dictionary<string, object>>());
             }
 
-            list.Status = jsonObj["status"].ToObject<string>();
-            list.Default = jsonObj["default"].ToObject<string>();
+            list.Status = jsonObj["status"]?.ToObject<string>();
+            list.Default = jsonObj["default"]?.ToObject<string>();
 
             return list;
         }
@@ -917,14 +981,14 @@ namespace putSharp
 
             EventsList list = new EventsList();
 
-            object[] events = ((JArray)jsonObj["events"]).ToObject<object[]>();
+            object[] events = ((JArray)jsonObj["events"])?.ToObject<object[]>();
 
             foreach (JObject evnt in events)
             {
                 list.Events.Add(evnt.ToObject<Dictionary<string, object>>());
             }
 
-            list.Status = jsonObj["status"].ToObject<string>();
+            list.Status = jsonObj["status"]?.ToObject<string>();
 
             return list;
         }
