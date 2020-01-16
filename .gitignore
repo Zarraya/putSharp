@@ -5,3 +5,10 @@ obj/
 *.ide-shm
 *.ide-wal
 *.cache
+putSharp/obj/Debug/putSharp.pdb
+putSharp/obj/Debug/putSharp.pdb
+putSharp/obj/Debug/putSharp.dll
+putSharp/obj/Debug/putSharp.csprojAssemblyReference.cache
+putSharp/obj/Debug/putSharp.csproj.FileListAbsolute.txt
+putSharp/bin/Debug/putSharp.pdb
+putSharp/bin/Debug/putSharp.dll

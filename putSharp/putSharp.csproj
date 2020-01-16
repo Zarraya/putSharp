@@ -30,9 +30,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\netstandard2.0\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
+      <HintPath>Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -69,6 +68,7 @@
     <Compile Include="DataTypes\Zip.cs" />
     <Compile Include="DataTypes\ZipsList.cs" />
     <Compile Include="DownloadManager.cs" />
+    <Compile Include="Downpour.cs" />
     <Compile Include="Feeds.cs" />
     <Compile Include="Files.cs" />
     <Compile Include="Friends.cs" />
@@ -80,6 +80,11 @@
     <Compile Include="SerializableDict.cs" />
     <Compile Include="Transfers.cs" />
     <Compile Include="Zips.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\..\..\..\Downloads\Newtonsoft.Json.dll">
+      <Link>Newtonsoft.Json.dll</Link>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
