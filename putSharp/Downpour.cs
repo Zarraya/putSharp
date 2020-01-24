@@ -166,19 +166,31 @@ namespace putSharp
       Match match6 = Regex.Match(this._rawString, @"[ _-]\d{1,3}[ _-]", RegexOptions.IgnoreCase);
       if (match6.Success)
       {
+        string str = CleanedString(match6.Value);
+        if (str.Length > 1)
+        {
           return match6.Value;
+        }
       }
 
       Match match7 = Regex.Match(this._rawString, @"[ _-]\d{1,3}" + Path.GetExtension(this._rawString), RegexOptions.IgnoreCase);
       if (match7.Success)
       {
+        string str = CleanedString(match7.Value);
+        if (str.Length > 1)
+        {
           return match7.Value;
+        }
       }
 
       Match match8 = Regex.Match(this._rawString, @"Episode\d{1,3}[. -]", RegexOptions.IgnoreCase);
       if (match8.Success)
       {
+        string str = CleanedString(match8.Value);
+        if (str.Length > 1)
+        {
           return match8.Value;
+        }
       }
 
       return (string) null;
