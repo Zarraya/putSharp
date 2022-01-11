@@ -12,32 +12,19 @@ namespace putSharp.DataTypes
 
         public Dictionary<string, object> Data { get => _data; set => _data = value; }
 
-        public int Availability => (int)_data["availability"];
-        public DateTime CreatedAt => (DateTime) _data["created_at"];
-        public double CurrentRatio => (double) _data["current_ratio"];
-        public long Downloaded => (long) _data["downloaded"];
-        public long Uploaded => (long) _data["uploaded"];
-        public long DownSpeed => (long) _data["down_speed"];
-        public long UpSpeed => (long) _data["up_speed"];
-        public string ErrorMesssage => (string) _data["error_message"];
-        public int EstimatedTime => (int) _data["estimated_time"];
-        public long FileId => (long) _data["file_id"];
-        public DateTime FinishedAt => (DateTime) _data["finished_at"];
-        public long Id => (long) _data["id"];
-        public bool IsPrivate => (bool) _data["is_private"];
-        public string Name => (string) _data["name"];
-        public long PeersConnected => (long) _data["peers_connected"];
-        public long PercentDone => (long) _data["percent_done"];
-        public long SaveParentId => (long) _data["save_parent_id"];
-        public long SecondsSeeding => (long) _data["seconds_seeding"];
-        public long Size => (long) _data["size"];
-        public string Source => (string) _data["source"];
-        public string Status => (string) _data["status"];
-        public string StatusMessage => (string) _data["status_message"];
-        public long SubscriptionId => (long) _data["subscription_id"];
-        public string TrackerMessage => (string) _data["tracker_message"];
-        public string Type => (string) _data["type"];
-        public long CompletionPercent => (long) _data["completion_percent"];
+        public long Availability => _data.ContainsKey("availability") && _data["availability"] != null ? (long)_data["availability"] : 0;
+        public DateTime CreatedAt => _data.ContainsKey("created_at") && _data["created_at"] != null ? (DateTime) _data["created_at"] : DateTime.MinValue;
+        public long Downloaded => _data.ContainsKey("downloaded") && _data["downloaded"] != null ? (long) _data["downloaded"] : 0;
+        public long Uploaded => _data.ContainsKey("uploaded") && _data["uploaded"] != null ? (long) _data["uploaded"] : 0;
+        public DateTime FinishedAt => _data.ContainsKey("finished_at") && _data["finished_at"] != null ? (DateTime) _data["finished_at"] : DateTime.MinValue;
+        public long Id => _data.ContainsKey("id") && _data["id"] != null ? (long) _data["id"] : 0;
+        public string Name => _data.ContainsKey("name") && _data["name"] != null ? (string) _data["name"] : "";
+        public long PeersGettingFromUs => _data.ContainsKey("peers_getting_from_us") && _data["peers_getting_from_us"] != null ? (long) _data["peers_getting_from_us"] : 0;
+        public long PeersSendingToUs => _data.ContainsKey("peers_sending_to_us") && _data["peers_sending_to_us"] != null ? (long) _data["peers_sending_to_us"] : 0;
+        public long PercentDone => _data.ContainsKey("percent_done") && _data["percent_done"] != null ? (long) _data["percent_done"] : 0;
+        public long SecondsSeeding => _data.ContainsKey("seconds_seeding") && _data["seconds_seeding"] != null ? (long) _data["seconds_seeding"] : 0;
+        public long Size => _data.ContainsKey("size") && _data["size"] != null ? (long) _data["size"] : 1;
+        public string Status => _data.ContainsKey("status") && _data["status"] != null ? (string) _data["status"] : "";
 
         #region Overrides of Object
 
